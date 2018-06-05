@@ -15,7 +15,7 @@ export const INITIAL_STATE = {
   copySuccess: '',
   returnQuery: '',
   outputLang: '',
-  inputQuery: '', // { "item": "happysocks", "quantity": 1, "category": [ "clothing", "socks" ] }',
+  inputQuery: '', //{ "item": "happysocks", "quantity": 1, "category": [ "clothing", "socks" ] }',
   copyError: null
 };
 
