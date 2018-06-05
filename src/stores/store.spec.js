@@ -7,6 +7,7 @@ describe('ExportToLanguage Store', () => {
         queryError: null,
         copySuccess: '',
         returnQuery: '',
+        outputLang: '',
         inputQuery: '',
         copyError: null
       }

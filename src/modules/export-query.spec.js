@@ -1,8 +1,10 @@
 import reducer, {
   ADD_INPUT_QUERY,
+  OUTPUT_LANG,
   QUERY_ERROR,
   COPY_QUERY,
   CLEAR_COPY,
+  setOutputLang,
   addInputQuery,
   queryError,
   copyQuery,
@@ -53,12 +55,22 @@ describe('export query module', () => {
     });
   });
 
+  describe('#setOutputLang', () => {
+    it('returns an outputLang action type', () => {
+      expect(setOutputLang('csharp')).to.deep.equal({
+        type: OUTPUT_LANG,
+        lang: 'csharp'
+      });
+    });
+  });
+
   describe('#reducer', () => {
     context('action type is queryError', () => {
       it('query error is has a value in state', () => {
         expect(reducer(undefined, queryError('uh oh'))).to.deep.equal({
           copyError: null,
           copySuccess: '',
+          outputLang: '',
           inputQuery: '',
           queryError: 'uh oh',
           returnQuery: ''
@@ -71,7 +83,21 @@ describe('export query module', () => {
         expect(reducer(undefined, addInputQuery('{ "beep": "boop" }'))).to.deep.equal({
           copyError: null,
           copySuccess: '',
+          outputLang: '',
           inputQuery: '{ "beep": "boop" }',
+          queryError: null,
+          returnQuery: ''
+        });
+      });
+    });
+
+    context('action type is setOutputLang', () => {
+      it('inputQuery has a value in state', () => {
+        expect(reducer(undefined, setOutputLang('java'))).to.deep.equal({
+          copyError: null,
+          copySuccess: '',
+          outputLang: 'java',
+          inputQuery: '',
           queryError: null,
           returnQuery: ''
         });
@@ -84,6 +110,7 @@ describe('export query module', () => {
           copyError: '',
           copySuccess: '',
           inputQuery: '',
+          outputLang: '',
           queryError: null,
           returnQuery: ''
         });
@@ -96,6 +123,7 @@ describe('export query module', () => {
           copyError: null,
           copySuccess: '',
           inputQuery: '',
+          outputLang: '',
           queryError: null,
           returnQuery: ''
         });

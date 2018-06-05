@@ -3,6 +3,7 @@ const compiler = require('bson-compilers');
 const PREFIX = 'exportQuery';
 
 export const ADD_INPUT_QUERY = `${PREFIX}/ADD_INPUT`;
+export const OUTPUT_LANG = `${PREFIX}/OUTPUT_LANG`;
 export const QUERY_ERROR = `${PREFIX}/QUERY_ERROR`;
 export const COPY_QUERY = `${PREFIX}/COPY_QUERY`;
 export const CLEAR_COPY = `${PREFIX}/CLEAR_COPY`;
@@ -13,7 +14,8 @@ export const INITIAL_STATE = {
   queryError: null,
   copySuccess: '',
   returnQuery: '',
-  inputQuery: '',
+  outputLang: '',
+  inputQuery: '', // { "item": "happysocks", "quantity": 1, "category": [ "clothing", "socks" ] }',
   copyError: null
 };
 
@@ -59,6 +61,7 @@ export const runQuery = (outputLang, input) => {
 
 export default function reducer(state = INITIAL_STATE, action) {
   if (action.type === ADD_INPUT_QUERY) return { ...state, inputQuery: action.input };
+  if (action.type === OUTPUT_LANG) return { ...state, outputLang: action.lang };
   if (action.type === QUERY_ERROR) return { ...state, queryError: action.error };
   if (action.type === COPY_QUERY) return copyToClipboard(state, action);
   if (action.type === CLEAR_COPY) return getClearCopy(state, action);
@@ -66,14 +69,19 @@ export default function reducer(state = INITIAL_STATE, action) {
   return state;
 }
 
+export const setOutputLang = (lang) => ({
+  type: OUTPUT_LANG,
+  lang: lang
+});
+
 export const addInputQuery = (input) => ({
   type: ADD_INPUT_QUERY,
   input: input
 });
 
-export const copyQuery = (input) => ({
-  type: COPY_QUERY,
-  input: input
+export const clearCopy = (copyType) => ({
+  type: CLEAR_COPY,
+  input: copyType
 });
 
 export const queryError = (error) => ({
@@ -81,7 +89,7 @@ export const queryError = (error) => ({
   error: error
 });
 
-export const clearCopy = (copyType) => ({
-  type: CLEAR_COPY,
-  input: copyType
+export const copyQuery = (input) => ({
+  type: COPY_QUERY,
+  input: input
 });

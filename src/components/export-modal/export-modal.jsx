@@ -1,7 +1,7 @@
 import { TextButton } from 'hadron-react-buttons';
+import SelectLang from 'components/select-lang';
 import { Modal, Alert } from 'react-bootstrap';
 import React, { Component } from 'react';
-import Select from 'react-select-plus';
 import Editor from 'components/editor';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -13,22 +13,9 @@ class ExportModal extends Component {
 
   static propTypes = {
     exportQuery: PropTypes.object.isRequired,
+    setOutputLang: PropTypes.func.isRequired,
     copyQuery: PropTypes.func.isRequired,
     runQuery: PropTypes.func.isRequired
-  }
-
-  // store the current query in state before we pass it to reducer
-  state = {
-    outputLang: {
-      value: '',
-      label: ''
-    }
-  }
-
-  // save state, and pass in the currently selected lang
-  handleOutputSelect = (outputLang) => {
-    this.setState({ outputLang });
-    this.props.runQuery(outputLang.value, this.props.exportQuery.inputQuery);
   }
 
   copyHandler = (evt) => {
@@ -37,22 +24,12 @@ class ExportModal extends Component {
   }
 
   render() {
-    const langOuputOptions = [
-      { value: 'java', label: 'Java' },
-      { value: 'javascript', label: 'Node' },
-      { value: 'csharp', label: 'C#' },
-      { value: 'python', label: 'Python 3' }
-    ];
-
     // const copyButtonStyle = classnames({
     //   'btn': true,
     //   'btn-sm': true,
     //   'btn-default': true,
     //   [ styles['export-to-lang-form-query-output-editor-copy'] ]: true
     // });
-
-    const outputLang = this.state.outputLang;
-    const selectedOutputValue = outputLang && outputLang.value;
 
     const errorDiv = this.props.exportQuery.queryError
       ? <Alert bsStyle="danger" className={classnames(styles['export-to-lang-form-query-input-error'])} children={this.props.exportQuery.queryError}/>
@@ -72,33 +49,20 @@ class ExportModal extends Component {
 
         <Modal.Body>
           <form name="export-to-lang-form" data-test-id="export-to-lang" className="export-to-lang-form">
-            <div className="form-group">
-              <Alert
-                className={classnames(styles['export-to-lang-form-alert'])}
-                children="PROJECT, SORT, SKIP, LIMIT options are not included as part of the exported query."/>
-            </div>
             <div className={classnames(styles['export-to-lang-form-headers'])}>
-              <p className={classnames(styles['export-tolang-form-headers-input'])}>My Query</p>
+              <p className={classnames(styles['export-to-lang-form-headers-input'])}>My Query</p>
               <div className={classnames(styles['export-to-lang-form-headers-output'])}>
                 <p className={classnames(styles['export-to-lang-form-headers-output-title'])}>Export Query To:</p>
-                <Select
-                  name="export-to-lang-form-query-output-select"
-                  className={classnames(styles['export-to-lang-form-headers-output-select'])}
-                  searchable={false}
-                  clearable={false}
-                  placeholder="Java"
-                  value={selectedOutputValue}
-                  onChange={this.handleOutputSelect}
-                  options={langOuputOptions}/>
+                <SelectLang inputQuery={this.props.exportQuery.inputQuery} setOutputLang={this.props.setOutputLang} runQuery={this.props.runQuery} outputLang={this.props.exportQuery.outputLang}/> 
               </div>
             </div>
             <div className={classnames(styles['export-to-lang-form-query'])}>
               <div className={classnames(styles['export-to-lang-form-query-input'])}>
-                <Editor outputQuery={this.props.exportQuery.returnQuery} queryError={this.props.exportQuery.queryError} outputLang={this.state.outputLang.value} inputQuery={this.props.exportQuery.inputQuery} input/>
+                <Editor outputQuery={this.props.exportQuery.returnQuery} queryError={this.props.exportQuery.queryError} outputLang={this.props.exportQuery.outputLang} inputQuery={this.props.exportQuery.inputQuery} input/>
                 {errorDiv}
               </div>
               <div className={classnames(styles['export-to-lang-form-query-output'])}>
-                <Editor outputQuery={this.props.exportQuery.returnQuery} queryError={this.props.exportQuery.queryError} outputLang={this.state.outputLang.value} inputQuery={this.props.exportQuery.inputQuery}/>
+                <Editor outputQuery={this.props.exportQuery.returnQuery} queryError={this.props.exportQuery.queryError} outputLang={this.props.exportQuery.outputLang} inputQuery={this.props.exportQuery.inputQuery}/>
               </div>
             </div>
           </form>
