@@ -8,8 +8,7 @@ describe('ExportToLanguage Store', () => {
         copySuccess: '',
         returnQuery: '',
         outputLang: '',
-        inputQuery: '',
-        copyError: null
+        inputQuery: ''
       }
     });
   });

@@ -1,3 +1,4 @@
+import { TextButton } from 'hadron-react-buttons';
 import SelectLang from 'components/select-lang';
 import React, { Component } from 'react';
 import { Alert } from 'react-bootstrap';
@@ -23,12 +24,11 @@ class ExportForm extends Component {
   }
 
   render() {
-    // const copyButtonStyle = classnames({
-    //   'btn': true,
-    //   'btn-sm': true,
-    //   'btn-default': true,
-    //   [ styles['export-to-lang-query-output-editor-copy'] ]: true
-    // });
+    const copyButtonStyle = classnames({
+      [ styles['export-to-lang-query-output-copy'] ]: true,
+      'btn-default': true,
+      'btn': true
+    });
 
     const errorDiv = this.props.exportQuery.queryError
       ? <Alert bsStyle="danger" className={classnames(styles['export-to-lang-query-input-error'])} children={this.props.exportQuery.queryError}/>
@@ -40,16 +40,33 @@ class ExportForm extends Component {
           <p className={classnames(styles['export-to-lang-headers-input'])}>My Query</p>
           <div className={classnames(styles['export-to-lang-headers-output'])}>
             <p className={classnames(styles['export-to-lang-headers-output-title'])}>Export Query To:</p>
-            <SelectLang inputQuery={this.props.exportQuery.inputQuery} setOutputLang={this.props.setOutputLang} runQuery={this.props.runQuery} outputLang={this.props.exportQuery.outputLang}/>
+            <SelectLang
+              inputQuery={this.props.exportQuery.inputQuery}
+              setOutputLang={this.props.setOutputLang}
+              runQuery={this.props.runQuery}
+              outputLang={this.props.exportQuery.outputLang}/>
           </div>
         </div>
         <div className={classnames(styles['export-to-lang-query'])}>
           <div className={classnames(styles['export-to-lang-query-input'])}>
-            <Editor outputQuery={this.props.exportQuery.returnQuery} queryError={this.props.exportQuery.queryError} outputLang={this.props.exportQuery.outputLang} inputQuery={this.props.exportQuery.inputQuery} input/>
+            <Editor
+              outputQuery={this.props.exportQuery.returnQuery}
+              queryError={this.props.exportQuery.queryError}
+              outputLang={this.props.exportQuery.outputLang}
+              inputQuery={this.props.exportQuery.inputQuery}
+              input/>
             {errorDiv}
           </div>
           <div className={classnames(styles['export-to-lang-query-output'])}>
-            <Editor outputQuery={this.props.exportQuery.returnQuery} queryError={this.props.exportQuery.queryError} outputLang={this.props.exportQuery.outputLang} inputQuery={this.props.exportQuery.inputQuery}/>
+            <Editor
+              outputQuery={this.props.exportQuery.returnQuery}
+              queryError={this.props.exportQuery.queryError}
+              outputLang={this.props.exportQuery.outputLang}
+              inputQuery={this.props.exportQuery.inputQuery}/>
+            <TextButton
+              className={copyButtonStyle}
+              text="Copy"
+              clickHandler={this.copyHandler}/>
           </div>
         </div>
       </form>

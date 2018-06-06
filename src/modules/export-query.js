@@ -1,3 +1,4 @@
+const clipboard = require('electron').clipboard;
 const compiler = require('bson-compilers');
 
 const PREFIX = 'exportQuery';
@@ -15,33 +16,17 @@ export const INITIAL_STATE = {
   copySuccess: '',
   returnQuery: '',
   outputLang: '',
-  inputQuery: '', //{ "item": "happysocks", "quantity": 1, "category": [ "clothing", "socks" ] }',
-  copyError: null
+  inputQuery: ''// { "item": "happysocks", "quantity": 1, "category": [ "clothing", "socks" ] }'
 };
 
 function getClearCopy(state, action) {
-  const newState = action.input === 'success'
-    ? { ...state, copySuccess: '' }
-    : { ...state, copyError: '' };
-
-  return newState;
+  return { ...state, copySuccess: '' };
 }
 
 function copyToClipboard(state, action) {
-  const el = document.createElement('input');
-  el.type = 'text';
-  el.setAttribute('styles', 'display: none;');
-  el.value = action.input;
-  document.body.appendChild(el);
-  el.select();
-  const copy = document.execCommand('copy');
-  document.body.removeChild(el);
+  clipboard.writeText(action.input)
 
-  const newState = copy
-    ? { ...state, copySuccess: true }
-    : { ...state, copyError: true };
-
-  return newState;
+  return { ...state, copySuccess: true };
 }
 
 export const runQuery = (outputLang, input) => {

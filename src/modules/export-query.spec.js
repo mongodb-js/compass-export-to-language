@@ -68,7 +68,6 @@ describe('export query module', () => {
     context('action type is queryError', () => {
       it('query error is has a value in state', () => {
         expect(reducer(undefined, queryError('uh oh'))).to.deep.equal({
-          copyError: null,
           copySuccess: '',
           outputLang: '',
           inputQuery: '',
@@ -81,7 +80,6 @@ describe('export query module', () => {
     context('action type is addInputQuery', () => {
       it('inputQuery has a value in state', () => {
         expect(reducer(undefined, addInputQuery('{ "beep": "boop" }'))).to.deep.equal({
-          copyError: null,
           copySuccess: '',
           outputLang: '',
           inputQuery: '{ "beep": "boop" }',
@@ -94,7 +92,6 @@ describe('export query module', () => {
     context('action type is setOutputLang', () => {
       it('inputQuery has a value in state', () => {
         expect(reducer(undefined, setOutputLang('java'))).to.deep.equal({
-          copyError: null,
           copySuccess: '',
           outputLang: 'java',
           inputQuery: '',
@@ -107,7 +104,6 @@ describe('export query module', () => {
     context('action type is clearCopy', () => {
       it('returns a clearCopy state', () => {
         expect(reducer(undefined, clearCopy('uh oh'))).to.deep.equal({
-          copyError: '',
           copySuccess: '',
           inputQuery: '',
           outputLang: '',
@@ -120,7 +116,6 @@ describe('export query module', () => {
     context('an empty action type returns an intial state', () => {
       it('empty initial state comes back', () => {
         expect(reducer(undefined, {})).to.deep.equal({
-          copyError: null,
           copySuccess: '',
           inputQuery: '',
           outputLang: '',
