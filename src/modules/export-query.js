@@ -13,18 +13,14 @@ export const RUN_QUERY = `${PREFIX}/RUN_QUERY`;
 // TODO: change inputQuery to '' when working with compass
 export const INITIAL_STATE = {
   queryError: null,
-  copySuccess: '',
+  copySuccess: false,
   returnQuery: '',
   outputLang: '',
-  inputQuery: ''// { "item": "happysocks", "quantity": 1, "category": [ "clothing", "socks" ] }'
+  inputQuery: '' // { "item": "happysocks", "quantity": 1, "category": [ "clothing", "socks" ] }'
 };
 
-function getClearCopy(state, action) {
-  return { ...state, copySuccess: '' };
-}
-
 function copyToClipboard(state, action) {
-  clipboard.writeText(action.input)
+  clipboard.writeText(action.input);
 
   return { ...state, copySuccess: true };
 }
@@ -49,7 +45,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   if (action.type === OUTPUT_LANG) return { ...state, outputLang: action.lang };
   if (action.type === QUERY_ERROR) return { ...state, queryError: action.error };
   if (action.type === COPY_QUERY) return copyToClipboard(state, action);
-  if (action.type === CLEAR_COPY) return getClearCopy(state, action);
+  if (action.type === CLEAR_COPY) return { ...state, copySuccess: false };
 
   return state;
 }
@@ -64,9 +60,8 @@ export const addInputQuery = (input) => ({
   input: input
 });
 
-export const clearCopy = (copyType) => ({
-  type: CLEAR_COPY,
-  input: copyType
+export const clearCopy = () => ({
+  type: CLEAR_COPY
 });
 
 export const queryError = (error) => ({

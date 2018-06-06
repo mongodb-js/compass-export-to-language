@@ -15,12 +15,14 @@ class ExportForm extends Component {
     exportQuery: PropTypes.object.isRequired,
     setOutputLang: PropTypes.func.isRequired,
     copyQuery: PropTypes.func.isRequired,
+    clearCopy: PropTypes.func.isRequired,
     runQuery: PropTypes.func.isRequired
   }
 
   copyHandler = (evt) => {
     evt.preventDefault();
     this.props.copyQuery(this.props.exportQuery.returnQuery);
+    setTimeout(() => { this.props.clearCopy(); }, 2500);
   }
 
   render() {
@@ -32,6 +34,10 @@ class ExportForm extends Component {
 
     const errorDiv = this.props.exportQuery.queryError
       ? <Alert bsStyle="danger" className={classnames(styles['export-to-lang-query-input-error'])} children={this.props.exportQuery.queryError}/>
+      : '';
+
+    const bubbleDiv = this.props.exportQuery.copySuccess
+      ? <div className={classnames(styles['export-to-lang-query-output-bubble'])}>Copied!</div>
       : '';
 
     return (
@@ -63,6 +69,7 @@ class ExportForm extends Component {
               queryError={this.props.exportQuery.queryError}
               outputLang={this.props.exportQuery.outputLang}
               inputQuery={this.props.exportQuery.inputQuery}/>
+            {bubbleDiv}
             <TextButton
               className={copyButtonStyle}
               text="Copy"
