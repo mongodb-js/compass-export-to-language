@@ -52,9 +52,10 @@ export const runQuery = (outputLang, input) => {
     const state = getState();
 
     try {
-      const output = compiler.shell[outputLang](stringify(input));
       console.log(input);
       console.log('INPUT STRINGIFIED', stringify(input))
+      const output = compiler.shell[outputLang](stringify(input));
+      console.log(output)
       if (state.exportQuery.imports !== '') state.exportQuery.imports = compiler.imports[outputLang];
       state.exportQuery.returnQuery = output;
       state.exportQuery.queryError = null;
