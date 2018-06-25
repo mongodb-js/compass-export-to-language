@@ -16,8 +16,8 @@ export const RUN_QUERY = `${PREFIX}/RUN_QUERY`;
 
 // TODO: change inputQuery to '' when working with compass
 export const INITIAL_STATE = {
-  namespace: 'Query',
   outputLang: 'python',
+  namespace: 'Query',
   copySuccess: false,
   queryError: null,
   modalOpen: false,
