@@ -52,7 +52,7 @@ export const runQuery = (outputLang, input) => {
     const state = getState();
 
     try {
-      const output = compiler.shell[outputLang](stringify(input));
+      const output = compiler.javascript[outputLang](stringify(input));
       if (state.exportQuery.imports !== '') state.exportQuery.imports = compiler.imports[outputLang];
       state.exportQuery.returnQuery = output;
       state.exportQuery.queryError = null;
