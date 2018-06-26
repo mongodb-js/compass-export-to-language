@@ -21,10 +21,7 @@
     "link-plugin": "./scripts/link.sh",
     "unlink-plugin": "./scripts/unlink.sh",
     "prepublish": "npm run compile",
-    "storybook": "start-storybook -p 9001 -c .storybook",
-    "precommit": [
-      "check"
-    ]
+    "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "license": "Apache-2.0",
   "peerDependencies": {
@@ -119,7 +116,7 @@
   },
   "dependencies": {
     "brace": "^0.11.1",
-    "bson-compilers": "^0.4.3",
+    "bson-compilers": "^0.4.5",
     "enzyme-adapter-react-16": "^1.1.1",
     "hadron-react-buttons": "^2.0.0",
     "javascript-stringify": "^1.6.0",
