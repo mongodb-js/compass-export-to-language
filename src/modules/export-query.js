@@ -54,7 +54,7 @@ export const runQuery = (outputLang, input) => {
     const state = getState();
 
     try {
-      const inputStr = stringify(input);
+      const inputStr = stringify.toJSString(input);
       const output = compiler.shell[outputLang].compile(inputStr, state.exportQuery.builders);
       state.exportQuery.imports = state.exportQuery.imports !== '' ? compiler.shell[outputLang].getImports() : '';
       state.exportQuery.returnQuery = output;

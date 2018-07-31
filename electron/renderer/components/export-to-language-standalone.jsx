@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ExportToLanguagePlugin, { activate } from 'plugin';
 import PropTypes from 'prop-types';
-const parser = require('mongodb-query-parser');
+import parser from 'mongodb-query-parser';
 
 
 class ExportToLanguageStandalone extends Component {
