@@ -29,7 +29,7 @@ class ExportForm extends Component {
     const copyButtonStyle = classnames({
       [ styles['export-to-lang-query-output-copy'] ]: true,
       'btn-sm': true,
-      'btn-info': true,
+      'btn-default': true,
       'btn': true
     });
 
@@ -73,11 +73,13 @@ class ExportForm extends Component {
               inputQuery={this.props.exportQuery.inputQuery}
               imports={this.props.exportQuery.imports}/>
             {bubbleDiv}
-            <IconTextButton
-              clickHandler={this.copyHandler}
-              className={copyButtonStyle}
-              iconClassName="fa fa-paste"
-              text="Copy"/>
+            <div className={classnames(styles['export-to-lang-copy-container'])}>
+              <IconTextButton
+                clickHandler={this.copyHandler}
+                className={copyButtonStyle}
+                iconClassName="fa fa-copy"
+                text="Copy"/>
+            </div>
           </div>
         </div>
       </form>
