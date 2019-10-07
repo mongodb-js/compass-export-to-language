@@ -1,20 +1,43 @@
-import {
-  runQuery,
-  copyQuery,
-  clearCopy,
-  queryError,
-  setOutputLang,
-  toggleModal,
-  includeImports,
-  useBuilders,
-  includeDriver
-} from 'modules/export-query';
+import { runQuery } from 'modules';
+import { copySuccessChanged } from 'modules/copy-success';
+import { queryErrorChanged } from 'modules/query-error';
+import { outputLangChanged } from 'modules/output-lang';
+import { modalOpenChanged } from 'modules/modal-open';
+import { showImportsChanged } from 'modules/show-imports';
+import { buildersChanged } from 'modules/builders';
+import { driverChanged } from 'modules/driver';
+import { copyToClipboardFnChanged } from 'modules/copy-to-clipboard';
 import ExportModal from 'components/export-modal';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-class ExportToLanguage extends Component {
+class ExportToLanguage extends PureComponent {
   static displayName = 'ExportToLanguageComponent';
+  static propTypes = {
+    builders: PropTypes.bool.isRequired,
+    copySuccess: PropTypes.bool.isRequired,
+    copyToClipboard: PropTypes.func,
+    driver: PropTypes.bool.isRequired,
+    imports: PropTypes.string.isRequired,
+    inputQuery: PropTypes.object.isRequired,
+    modalOpen: PropTypes.bool.isRequired,
+    mode: PropTypes.string.isRequired,
+    outputLang: PropTypes.string.isRequired,
+    queryError: PropTypes.string,
+    returnQuery: PropTypes.string.isRequired,
+    showImports: PropTypes.bool.isRequired,
+    uri: PropTypes.string.isRequired,
+    showImportsChanged: PropTypes.func.isRequired,
+    buildersChanged: PropTypes.func.isRequired,
+    driverChanged: PropTypes.func.isRequired,
+    outputLangChanged: PropTypes.func.isRequired,
+    queryErrorChanged: PropTypes.func.isRequired,
+    modalOpenChanged: PropTypes.func.isRequired,
+    copySuccessChanged: PropTypes.func.isRequired,
+    copyToClipboardFnChanged: PropTypes.func.isRequired,
+    runQuery: PropTypes.func.isRequired
+  };
 
   /**
    * Render ExportToLanguage component.
@@ -38,7 +61,19 @@ class ExportToLanguage extends Component {
  * @returns {Object} The mapped properties.
  */
 const mapStateToProps = (state) => ({
-  exportQuery: state.exportQuery
+  builders: state.builders,
+  copySuccess: state.copySuccess,
+  copyToClipboard: state.copyToClipboard,
+  driver: state.driver,
+  imports: state.imports,
+  inputQuery: state.inputQuery,
+  modalOpen: state.modalOpen,
+  mode: state.mode,
+  outputLang: state.outputLang,
+  queryError: state.queryError,
+  returnQuery: state.returnQuery,
+  showImports: state.showImports,
+  uri: state.uri
 });
 
 /**
@@ -48,14 +83,14 @@ const mapStateToProps = (state) => ({
 const MappedExportToLanguage = connect(
   mapStateToProps,
   {
-    includeImports,
-    useBuilders,
-    includeDriver,
-    setOutputLang,
-    queryError,
-    toggleModal,
-    copyQuery,
-    clearCopy,
+    showImportsChanged,
+    buildersChanged,
+    driverChanged,
+    outputLangChanged,
+    queryErrorChanged,
+    modalOpenChanged,
+    copySuccessChanged,
+    copyToClipboardFnChanged,
     runQuery
   },
 )(ExportToLanguage);

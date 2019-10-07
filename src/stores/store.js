@@ -1,12 +1,9 @@
-import {
-  addInputQuery,
-  toggleModal,
-  setNamespace,
-  setUri,
-  runQuery,
-  runAggregation,
-  copyToClipboardFnChanged
-} from 'modules/export-query';
+import { inputQueryChanged } from 'modules/input-query';
+import { modalOpenChanged } from 'modules/modal-open';
+import { modeChanged } from 'modules/mode';
+import { uriChanged } from 'modules/uri';
+import { runQuery } from 'modules';
+import { copyToClipboardFnChanged } from 'modules/copy-to-clipboard';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import {
@@ -39,21 +36,21 @@ const configureStore = (options = {}) => {
     const localAppRegistry = options.localAppRegistry;
     store.dispatch(localAppRegistryActivated(localAppRegistry));
     localAppRegistry.on('open-aggregation-export-to-language', (aggregation) => {
-      store.dispatch(toggleModal(true));
-      store.dispatch(setNamespace('Pipeline'));
-      store.dispatch(runAggregation('python', aggregation));
-      store.dispatch(addInputQuery(aggregation));
+      store.dispatch(modeChanged('Pipeline'));
+      store.dispatch(modalOpenChanged(true));
+      store.dispatch(runQuery('python', { aggregation: aggregation }));
+      store.dispatch(inputQueryChanged({ aggregation: aggregation }));
     });
 
     localAppRegistry.on('open-query-export-to-language', (query) => {
-      store.dispatch(toggleModal(true));
-      store.dispatch(setNamespace('Query'));
+      store.dispatch(modeChanged('Query'));
+      store.dispatch(modalOpenChanged(true));
       store.dispatch(runQuery('python', query));
-      store.dispatch(addInputQuery(query));
+      store.dispatch(inputQueryChanged(query));
     });
 
     localAppRegistry.on('data-service-initialized', (dataService) => {
-      store.dispatch(setUri(dataService.client.model.driverUrl));
+      store.dispatch(uriChanged(dataService.client.model.driverUrl));
     });
 
   }
@@ -64,7 +61,7 @@ const configureStore = (options = {}) => {
   }
 
   if (options.copyToClipboardFn) {
-    setCopyToClipboardFn(store, options.copyToClipboardFn);
+    store.dispatch(copyToClipboardFnChanged(options.copyToClipboardFn));
   }
 
   return store;
