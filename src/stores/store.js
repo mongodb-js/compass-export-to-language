@@ -2,7 +2,9 @@ import {
   addInputQuery,
   toggleModal,
   setNamespace,
+  setUri,
   runQuery,
+  runAggregation,
   copyToClipboardFnChanged
 } from 'modules/export-query';
 import { createStore, applyMiddleware } from 'redux';
@@ -39,7 +41,7 @@ const configureStore = (options = {}) => {
     localAppRegistry.on('open-aggregation-export-to-language', (aggregation) => {
       store.dispatch(toggleModal(true));
       store.dispatch(setNamespace('Pipeline'));
-      store.dispatch(runQuery('python', aggregation));
+      store.dispatch(runAggregation('python', aggregation));
       store.dispatch(addInputQuery(aggregation));
     });
 
@@ -49,6 +51,11 @@ const configureStore = (options = {}) => {
       store.dispatch(runQuery('python', query));
       store.dispatch(addInputQuery(query));
     });
+
+    localAppRegistry.on('data-service-initialized', (dataService) => {
+      store.dispatch(setUri(dataService.client.model.driverUrl));
+    });
+
   }
 
   if (options.globalAppRegistry) {

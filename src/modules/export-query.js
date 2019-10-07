@@ -6,6 +6,7 @@ import compiler from 'bson-transpilers';
 const PREFIX = 'exportQuery';
 
 export const SET_NAMESPACE = `${PREFIX}/SET_NAMESPACE`;
+export const SET_URI = `${PREFIX}/SET_URI`;
 export const ADD_INPUT_QUERY = `${PREFIX}/ADD_INPUT`;
 export const INCLUDE_IMPORTS = `${PREFIX}/IMPORTS`;
 export const USE_BUILDERS = `${PREFIX}/USE_BUILDERS`;
@@ -20,6 +21,7 @@ export const COPY_TO_CLIPBOARD_FN_CHANGED = `${PREFIX}/COPY_TO_CLIPBOARD_FN_CHAN
 // TODO: change inputQuery to '' when working with compass
 export const INITIAL_STATE = {
   namespace: 'Query',
+  uri: '',
   outputLang: 'python',
   copySuccess: false,
   queryError: null,
@@ -61,7 +63,32 @@ export const runQuery = (outputLang, input) => {
     const state = getState();
 
     try {
-      const output = compiler.shell[outputLang].compile(input, state.exportQuery.builders);
+      input.uri = state.uri;
+      const output = compiler.shell[outputLang].compileQuery(input, state.exportQuery.builders);
+      state.exportQuery.imports = compiler.shell[outputLang].getImports();
+      state.exportQuery.returnQuery = output;
+      state.exportQuery.queryError = null;
+      dispatch(
+        globalAppRegistryEmit(
+          'compass:export-to-language:run',
+          { language: state.outputLang, showImports: state.showImports, type: state.namespace }
+        )
+      );
+      return state;
+    } catch (e) {
+      return dispatch(queryError(e.message));
+    }
+  };
+};
+
+export const runAggregation = (outputLang, input) => {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    try {
+      const output = compiler.shell[outputLang].compileAggregation(
+        { uri: state.uri, aggregation: input }, state.exportQuery.builders
+      );
       state.exportQuery.imports = compiler.shell[outputLang].getImports();
       state.exportQuery.returnQuery = output;
       state.exportQuery.queryError = null;
@@ -80,6 +107,7 @@ export const runQuery = (outputLang, input) => {
 
 export default function reducer(state = INITIAL_STATE, action) {
   if (action.type === SET_NAMESPACE) return { ...state, namespace: action.namespace };
+  if (action.type === SET_URI) return { ...state, uri: action.uri };
   if (action.type === ADD_INPUT_QUERY) return { ...state, inputQuery: action.input };
   if (action.type === QUERY_ERROR) return { ...state, queryError: action.error };
   if (action.type === OUTPUT_LANG) return { ...state, outputLang: action.lang };
@@ -97,6 +125,11 @@ export default function reducer(state = INITIAL_STATE, action) {
 export const setNamespace = (namespace) => ({
   type: SET_NAMESPACE,
   namespace: namespace
+});
+
+export const setUri = (uri) => ({
+  type: SET_URI,
+  uri: uri
 });
 
 export const includeImports = (imports) => ({

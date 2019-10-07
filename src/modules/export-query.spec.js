@@ -3,6 +3,7 @@ import reducer, {
   INCLUDE_IMPORTS,
   USE_BUILDERS,
   SET_NAMESPACE,
+  SET_URI,
   OUTPUT_LANG,
   QUERY_ERROR,
   TOGGLE_MODAL,
@@ -14,6 +15,7 @@ import reducer, {
   setOutputLang,
   addInputQuery,
   setNamespace,
+  setUri,
   copyToClipboardFnChanged,
   toggleModal,
   queryError,
@@ -66,6 +68,16 @@ describe('export query module', () => {
       });
     });
   });
+
+  describe('#setUri', () => {
+    it('returns a uri type event', () => {
+      expect(setUri('localhost')).to.deep.equal({
+        type: SET_URI,
+        uri: 'localhost'
+      });
+    });
+  });
+
 
   describe('#addInputQuery', () => {
     it('returns a add input query input type', () => {
@@ -125,6 +137,7 @@ describe('export query module', () => {
           outputLang: 'python',
           queryError: 'uh oh',
           namespace: 'Query',
+          uri: '',
           copySuccess: false,
           modalOpen: false,
           returnQuery: '',
@@ -142,6 +155,7 @@ describe('export query module', () => {
         expect(reducer(undefined, includeImports(true))).to.deep.equal({
           outputLang: 'python',
           namespace: 'Query',
+          uri: '',
           copySuccess: false,
           queryError: null,
           modalOpen: false,
@@ -158,6 +172,7 @@ describe('export query module', () => {
         expect(reducer(undefined, includeImports(false))).to.deep.equal({
           outputLang: 'python',
           namespace: 'Query',
+          uri: '',
           copySuccess: false,
           queryError: null,
           modalOpen: false,
@@ -176,6 +191,7 @@ describe('export query module', () => {
         expect(reducer(undefined, useBuilders(true))).to.deep.equal({
           outputLang: 'python',
           namespace: 'Query',
+          uri: '',
           copySuccess: false,
           queryError: null,
           modalOpen: false,
@@ -192,6 +208,7 @@ describe('export query module', () => {
         expect(reducer(undefined, useBuilders(false))).to.deep.equal({
           outputLang: 'python',
           namespace: 'Query',
+          uri: '',
           copySuccess: false,
           queryError: null,
           modalOpen: false,
@@ -212,6 +229,7 @@ describe('export query module', () => {
           outputLang: 'python',
           copySuccess: false,
           namespace: 'Query',
+          uri: '',
           modalOpen: false,
           queryError: null,
           returnQuery: '',
@@ -229,6 +247,7 @@ describe('export query module', () => {
           outputLang: 'csharp',
           copySuccess: false,
           namespace: 'Query',
+          uri: '',
           modalOpen: false,
           queryError: null,
           returnQuery: '',
@@ -247,6 +266,7 @@ describe('export query module', () => {
           outputLang: 'python',
           copySuccess: false,
           namespace: 'Query',
+          uri: '',
           queryError: null,
           modalOpen: true,
           returnQuery: '',
@@ -265,6 +285,7 @@ describe('export query module', () => {
           outputLang: 'python',
           copySuccess: false,
           namespace: 'Query',
+          uri: '',
           modalOpen: false,
           queryError: null,
           returnQuery: '',
@@ -283,6 +304,7 @@ describe('export query module', () => {
           outputLang: 'python',
           copySuccess: false,
           namespace: 'Query',
+          uri: '',
           queryError: null,
           modalOpen: false,
           returnQuery: '',
@@ -299,6 +321,7 @@ describe('export query module', () => {
       it('returns a namespace in state', () => {
         expect(reducer(undefined, setNamespace('Pipeline'))).to.deep.equal({
           namespace: 'Pipeline',
+          uri: '',
           outputLang: 'python',
           copySuccess: false,
           queryError: null,
@@ -317,6 +340,7 @@ describe('export query module', () => {
       it('returns a fn in state', () => {
         expect(reducer(undefined, copyToClipboardFnChanged('test'))).to.deep.equal({
           namespace: 'Query',
+          uri: '',
           outputLang: 'python',
           copySuccess: false,
           queryError: null,
@@ -337,6 +361,7 @@ describe('export query module', () => {
           outputLang: 'python',
           copySuccess: false,
           namespace: 'Query',
+          uri: '',
           queryError: null,
           modalOpen: false,
           returnQuery: '',
