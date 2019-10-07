@@ -1,6 +1,7 @@
 import reducer, {
   ADD_INPUT_QUERY,
   INCLUDE_IMPORTS,
+  INCLUDE_DRIVER,
   USE_BUILDERS,
   SET_NAMESPACE,
   SET_URI,
@@ -12,6 +13,7 @@ import reducer, {
   COPY_TO_CLIPBOARD_FN_CHANGED,
   includeImports,
   useBuilders,
+  includeDriver,
   setOutputLang,
   addInputQuery,
   setNamespace,
@@ -121,6 +123,15 @@ describe('export query module', () => {
     });
   });
 
+  describe('#includeDriver', () => {
+    it('returns an includeDriver action type', () => {
+      expect(includeDriver(true)).to.deep.equal({
+        type: INCLUDE_DRIVER,
+        driver: true
+      });
+    });
+  });
+
   describe('#copyToClipboardFnChanged', () => {
     it('returns the COPY_TO_CLIPBOARD_FN_CHANGED action', () => {
       expect(copyToClipboardFnChanged('testing')).to.deep.equal({
@@ -145,6 +156,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -164,6 +176,7 @@ describe('export query module', () => {
           imports: '',
           showImports: true,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -181,6 +194,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -200,6 +214,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -217,10 +232,50 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: false,
+          driver: false,
           copyToClipboardFn: null
         });
       });
     });
+
+    context('action type is includeDriver', () => {
+      it('driver true includes driver in state', () => {
+        expect(reducer(undefined, includeDriver(true))).to.deep.equal({
+          outputLang: 'python',
+          namespace: 'Query',
+          uri: '',
+          copySuccess: false,
+          queryError: null,
+          modalOpen: false,
+          returnQuery: '',
+          inputQuery: '',
+          imports: '',
+          showImports: false,
+          builders: true,
+          driver: true,
+          copyToClipboardFn: null
+        });
+      });
+
+      it('driver false returns false driver in state', () => {
+        expect(reducer(undefined, includeDriver(false))).to.deep.equal({
+          outputLang: 'python',
+          namespace: 'Query',
+          uri: '',
+          copySuccess: false,
+          queryError: null,
+          modalOpen: false,
+          returnQuery: '',
+          inputQuery: '',
+          imports: '',
+          showImports: false,
+          builders: true,
+          driver: false,
+          copyToClipboardFn: null
+        });
+      });
+    });
+
 
     context('action type is addInputQuery', () => {
       it('inputQuery has a value in state', () => {
@@ -236,6 +291,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -255,6 +311,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -274,6 +331,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -293,6 +351,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -312,6 +371,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -331,6 +391,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });
@@ -350,6 +411,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: 'test'
         });
       });
@@ -369,6 +431,7 @@ describe('export query module', () => {
           imports: '',
           showImports: false,
           builders: true,
+          driver: false,
           copyToClipboardFn: null
         });
       });

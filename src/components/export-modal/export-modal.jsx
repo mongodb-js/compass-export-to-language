@@ -13,6 +13,7 @@ class ExportModal extends Component {
   static propTypes = {
     includeImports: PropTypes.func.isRequired,
     useBuilders: PropTypes.func.isRequired,
+    includeDriver: PropTypes.func.isRequired,
     exportQuery: PropTypes.object.isRequired,
     setOutputLang: PropTypes.func.isRequired,
     toggleModal: PropTypes.func.isRequired,
@@ -31,6 +32,11 @@ class ExportModal extends Component {
 
   buildersHandler = () => {
     this.props.useBuilders(!this.props.exportQuery.builders);
+    this.props.runQuery(this.props.exportQuery.outputLang, this.props.exportQuery.inputQuery);
+  };
+
+  driverHandler = () => {
+    this.props.includeDriver(!this.props.exportQuery.driver);
     this.props.runQuery(this.props.exportQuery.outputLang, this.props.exportQuery.inputQuery);
   };
 
@@ -71,6 +77,9 @@ class ExportModal extends Component {
             <Checkbox data-test-id="export-to-lang-checkbox-imports" onClick={this.importsHandler}>
                Include Import Statements
            </Checkbox>
+            <Checkbox data-test-id="export-to-lang-checkbox-driver" onClick={this.driverHandler}>
+              Include Driver Syntax
+            </Checkbox>
           </div>
           {this.renderBuilderCheckbox()}
         </Modal.Body>

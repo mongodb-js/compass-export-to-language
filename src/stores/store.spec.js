@@ -22,7 +22,7 @@ describe('ExportToLanguage Store', () => {
     store = configureStore({ localAppRegistry: appRegistry });
   });
 
-  xdescribe('#onActivated', () => {
+  describe('#onActivated', () => {
     afterEach(() => {
       if (unsubscribe !== undefined) unsubscribe();
     });
@@ -97,7 +97,7 @@ describe('ExportToLanguage Store', () => {
 
       it('triggers run query command', (done) => {
         unsubscribe = subscribeCheck(store, query, (s) => (
-          s.exportQuery.returnQuery === compiler.shell.python.compile(query)
+          s.exportQuery.returnQuery === compiler.shell.python.compile(query.filter)
         ), done);
         appRegistry.emit('open-query-export-to-language', query);
       });

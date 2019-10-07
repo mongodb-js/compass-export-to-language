@@ -6,7 +6,8 @@ import {
   setOutputLang,
   toggleModal,
   includeImports,
-  useBuilders
+  useBuilders,
+  includeDriver
 } from 'modules/export-query';
 import ExportModal from 'components/export-modal';
 import React, { Component } from 'react';
@@ -49,6 +50,7 @@ const MappedExportToLanguage = connect(
   {
     includeImports,
     useBuilders,
+    includeDriver,
     setOutputLang,
     queryError,
     toggleModal,

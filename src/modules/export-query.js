@@ -10,6 +10,7 @@ export const SET_URI = `${PREFIX}/SET_URI`;
 export const ADD_INPUT_QUERY = `${PREFIX}/ADD_INPUT`;
 export const INCLUDE_IMPORTS = `${PREFIX}/IMPORTS`;
 export const USE_BUILDERS = `${PREFIX}/USE_BUILDERS`;
+export const INCLUDE_DRIVER = `${PREFIX}/INCLUDE_DRIVER`;
 export const OUTPUT_LANG = `${PREFIX}/OUTPUT_LANG`;
 export const QUERY_ERROR = `${PREFIX}/QUERY_ERROR`;
 export const TOGGLE_MODAL = `${PREFIX}/MODAL_OPEN`;
@@ -31,6 +32,7 @@ export const INITIAL_STATE = {
   imports: '',
   showImports: false,
   builders: true,
+  driver: false,
   copyToClipboardFn: null
 };
 
@@ -63,8 +65,13 @@ export const runQuery = (outputLang, input) => {
     const state = getState();
 
     try {
-      input.uri = state.uri;
-      const output = compiler.shell[outputLang].compileQuery(input, state.exportQuery.builders);
+      let output;
+      if (state.exportQuery.driver) {
+        input.uri = state.uri;
+        output = compiler.shell[outputLang].compileQuery(input, state.exportQuery.builders);
+      } else {
+        output = compiler.shell[outputLang].compile(input.filter, state.exportQuery.builders);
+      }
       state.exportQuery.imports = compiler.shell[outputLang].getImports();
       state.exportQuery.returnQuery = output;
       state.exportQuery.queryError = null;
@@ -86,9 +93,14 @@ export const runAggregation = (outputLang, input) => {
     const state = getState();
 
     try {
-      const output = compiler.shell[outputLang].compileAggregation(
-        { uri: state.uri, aggregation: input }, state.exportQuery.builders
-      );
+      let output;
+      if (state.exportQuery.driver) {
+        output = compiler.shell[outputLang].compileAggregation(
+          { uri: state.uri, aggregation: input }, state.exportQuery.builders
+        );
+      } else {
+        output = compiler.shell[outputLang].compile(input, state.exportQuery.builders);
+      }
       state.exportQuery.imports = compiler.shell[outputLang].getImports();
       state.exportQuery.returnQuery = output;
       state.exportQuery.queryError = null;
@@ -114,6 +126,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   if (action.type === CLEAR_COPY) return { ...state, copySuccess: false };
   if (action.type === INCLUDE_IMPORTS) return addImports(state, action);
   if (action.type === USE_BUILDERS) return { ...state, builders: action.builders };
+  if (action.type === INCLUDE_DRIVER) return { ...state, driver: action.driver };
   if (action.type === COPY_QUERY) return copyToClipboard(state, action);
   if (action.type === TOGGLE_MODAL) return closeModal(state, action);
   if (action.type === COPY_TO_CLIPBOARD_FN_CHANGED) {
@@ -140,6 +153,11 @@ export const includeImports = (imports) => ({
 export const useBuilders = (builders) => ({
   type: USE_BUILDERS,
   builders: builders
+});
+
+export const includeDriver = (driver) => ({
+  type: INCLUDE_DRIVER,
+  driver: driver
 });
 
 export const setOutputLang = (lang) => ({
