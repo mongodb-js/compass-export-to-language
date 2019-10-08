@@ -4,7 +4,7 @@ import compiler from 'bson-transpilers';
 
 const subscribeCheck = (s, pipeline, check, done) => {
   const unsubscribe = s.subscribe(() => {
-    expect(s.getState().queryError).to.equal(null);
+    expect(s.getState().error).to.equal(null);
     if (check(s.getState())) {
       unsubscribe();
       done();
@@ -43,23 +43,23 @@ describe('ExportToLanguage Store', () => {
         appRegistry.emit('open-aggregation-export-to-language', agg);
       });
 
-      it('sets namespace to Pipeline', (done) => {
+      it('sets mode to Pipeline', (done) => {
         unsubscribe = subscribeCheck(store, agg, (s) => (
           s.mode === 'Pipeline'
         ), done);
         appRegistry.emit('open-aggregation-export-to-language', agg);
       });
 
-      it('adds input query to the state', (done) => {
+      it('adds input expression to the state', (done) => {
         unsubscribe = subscribeCheck(store, agg, (s) => (
-          s.inputQuery === agg
+          s.inputExpression.aggregation === agg
         ), done);
         appRegistry.emit('open-aggregation-export-to-language', agg);
       });
 
-      it('triggers run query command', (done) => {
+      it('triggers run transpiler command', (done) => {
         unsubscribe = subscribeCheck(store, agg, (s) => (
-          s.returnQuery === compiler.shell.python.compile(agg)
+          s.transpiledExpression === compiler.shell.python.compile(agg)
         ), done);
         appRegistry.emit('open-aggregation-export-to-language', agg);
       });
@@ -81,23 +81,23 @@ describe('ExportToLanguage Store', () => {
         appRegistry.emit('open-query-export-to-language', query);
       });
 
-      it('sets namespace to Query', (done) => {
+      it('sets mode to Query', (done) => {
         unsubscribe = subscribeCheck(store, query, (s) => (
           s.mode === 'Query'
         ), done);
         appRegistry.emit('open-query-export-to-language', query);
       });
 
-      it('adds input query to the state', (done) => {
+      it('adds input expression to the state', (done) => {
         unsubscribe = subscribeCheck(store, query, (s) => (
-          s.inputQuery === query
+          s.inputExpression === query
         ), done);
         appRegistry.emit('open-query-export-to-language', query);
       });
 
-      it('triggers run query command', (done) => {
+      it('triggers run transpiler command', (done) => {
         unsubscribe = subscribeCheck(store, query, (s) => (
-          s.returnQuery === compiler.shell.python.compile(query.filter)
+          s.transpiledExpression === compiler.shell.python.compile(query.filter)
         ), done);
         appRegistry.emit('open-query-export-to-language', query);
       });

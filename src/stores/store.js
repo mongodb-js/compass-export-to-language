@@ -1,8 +1,8 @@
-import { inputQueryChanged } from 'modules/input-query';
+import { inputExpressionChanged } from 'modules/input-expression';
 import { modalOpenChanged } from 'modules/modal-open';
 import { modeChanged } from 'modules/mode';
 import { uriChanged } from 'modules/uri';
-import { runQuery } from 'modules';
+import { runTranspiler } from 'modules';
 import { copyToClipboardFnChanged } from 'modules/copy-to-clipboard';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -38,15 +38,15 @@ const configureStore = (options = {}) => {
     localAppRegistry.on('open-aggregation-export-to-language', (aggregation) => {
       store.dispatch(modeChanged('Pipeline'));
       store.dispatch(modalOpenChanged(true));
-      store.dispatch(runQuery('python', { aggregation: aggregation }));
-      store.dispatch(inputQueryChanged({ aggregation: aggregation }));
+      store.dispatch(runTranspiler('python', { aggregation: aggregation }));
+      store.dispatch(inputExpressionChanged({ aggregation: aggregation }));
     });
 
     localAppRegistry.on('open-query-export-to-language', (query) => {
       store.dispatch(modeChanged('Query'));
       store.dispatch(modalOpenChanged(true));
-      store.dispatch(runQuery('python', query));
-      store.dispatch(inputQueryChanged(query));
+      store.dispatch(runTranspiler('python', query));
+      store.dispatch(inputExpressionChanged(query));
     });
 
     localAppRegistry.on('data-service-initialized', (dataService) => {

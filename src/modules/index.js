@@ -8,7 +8,7 @@ import builders, {
 import copySuccess, {
   INITIAL_STATE as COPY_SUCCESS_INITIAL_STATE
 } from 'modules/copy-success';
-import copyToClipboardFnChanged, {
+import copyToClipboard, {
   INITIAL_STATE as CTCFC_INITIAL_STATE
 } from 'modules/copy-to-clipboard';
 import driver, {
@@ -18,9 +18,9 @@ import imports, {
   INITIAL_STATE as IMPORTS_INITIAL_STATE,
   importsChanged
 } from 'modules/imports';
-import inputQuery, {
-  INITIAL_STATE as INPUT_QUERY_INITIAL_STATE
-} from 'modules/input-query';
+import inputExpression, {
+  INITIAL_STATE as INPUT_EXPRESSION_INITIAL_STATE
+} from 'modules/input-expression';
 import modalOpen, {
   INITIAL_STATE as MODAL_INITIAL_STATE
 } from 'modules/modal-open';
@@ -30,14 +30,14 @@ import mode, {
 import outputLang, {
   INITIAL_STATE as OUTPUT_LANG_INITIAL_STATE
 } from 'modules/output-lang';
-import queryError, {
-  INITIAL_STATE as QUERY_ERROR_INITIAL_STATE,
-  queryErrorChanged
-} from 'modules/query-error';
-import returnQuery, {
-  INITIAL_STATE as RETURN_QUERY_INITIAL_STATE,
-  returnQueryChanged
-} from 'modules/return-query';
+import error, {
+  INITIAL_STATE as ERROR_INITIAL_STATE,
+  errorChanged
+} from 'modules/error';
+import transpiledExpression, {
+  INITIAL_STATE as TRANSPILED_EXPRESSION_INITIAL_STATE,
+  transpiledExpressionChanged
+} from 'modules/transpiled-expression';
 import showImports, {
   INITIAL_STATE as SHOW_IMPORTS_INITIAL_STATE
 } from 'modules/show-imports';
@@ -56,12 +56,12 @@ export const INITIAL_STATE = {
   copyToClipboard: CTCFC_INITIAL_STATE,
   driver: DRIVER_INITIAL_STATE,
   imports: IMPORTS_INITIAL_STATE,
-  inputQuery: INPUT_QUERY_INITIAL_STATE,
+  inputExpression: INPUT_EXPRESSION_INITIAL_STATE,
   modalOpen: MODAL_INITIAL_STATE,
   mode: MODE_INITIAL_STATE,
   outputLang: OUTPUT_LANG_INITIAL_STATE,
-  queryError: QUERY_ERROR_INITIAL_STATE,
-  returnQuery: RETURN_QUERY_INITIAL_STATE,
+  error: ERROR_INITIAL_STATE,
+  transpiledExpression: TRANSPILED_EXPRESSION_INITIAL_STATE,
   showImports: SHOW_IMPORTS_INITIAL_STATE,
   uri: URI_INITIAL_STATE,
   appRegistry: APP_REGISTRY_STATE
@@ -73,15 +73,15 @@ export const INITIAL_STATE = {
 const reducer = combineReducers({
   builders,
   copySuccess,
-  copyToClipboardFnChanged,
+  copyToClipboard,
   driver,
   imports,
-  inputQuery,
+  inputExpression,
   modalOpen,
   mode,
   outputLang,
-  queryError,
-  returnQuery,
+  error,
+  transpiledExpression,
   showImports,
   uri,
   appRegistry
@@ -100,20 +100,21 @@ const rootReducer = (state, action) => {
 };
 
 
-export const runQuery = (outputLang, input) => {
+export const runTranspiler = (outputLang, input) => {
   return (dispatch, getState) => {
     const state = getState();
     try {
       let output;
-      input.uri = state.uri;
       if (state.driver) {
+        const toCompile = Object.assign({uri: state.uri}, input);
+        input.uri = state.uri;
         if (state.mode === 'Query') {
           output = compiler.shell[outputLang].compileQuery(
-            input, state.builders
+            toCompile, state.builders
           );
         } else {
           output = compiler.shell[outputLang].compileAggregation(
-            input, state.builders
+            toCompile, state.builders
           );
         }
       } else {
@@ -121,8 +122,8 @@ export const runQuery = (outputLang, input) => {
         output = compiler.shell[outputLang].compile(filter, state.builders);
       }
       dispatch(importsChanged(compiler.shell[outputLang].getImports()));
-      dispatch(returnQueryChanged(output));
-      dispatch(queryErrorChanged(null));
+      dispatch(transpiledExpressionChanged(output));
+      dispatch(errorChanged(null));
       dispatch(
         globalAppRegistryEmit(
           'compass:export-to-language:run',
@@ -131,7 +132,7 @@ export const runQuery = (outputLang, input) => {
       );
       // return state;
     } catch (e) {
-      return dispatch(queryErrorChanged(e.message));
+      return dispatch(errorChanged(e.message));
     }
   };
 };

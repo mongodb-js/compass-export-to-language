@@ -12,31 +12,33 @@ class ExportForm extends PureComponent {
   static displayName = 'ExportFormComponent';
 
   static propTypes = {
-    copySuccess: PropTypes.bool.isRequired,
-    copyToClipboard: PropTypes.func,
+    copySuccess: PropTypes.any.isRequired,
+    copyToClipboard: PropTypes.func.isRequired,
     imports: PropTypes.string.isRequired,
-    inputQuery: PropTypes.object.isRequired,
+    showImports: PropTypes.bool.isRequired,
+    inputExpression: PropTypes.object.isRequired,
+    transpiledExpression: PropTypes.string.isRequired,
     mode: PropTypes.string.isRequired,
     outputLang: PropTypes.string.isRequired,
-    queryError: PropTypes.string,
-    returnQuery: PropTypes.string.isRequired,
-    showImports: PropTypes.bool.isRequired,
+    error: PropTypes.string,
     from: PropTypes.string.isRequired,
     outputLangChanged: PropTypes.func.isRequired,
     copySuccessChanged: PropTypes.func.isRequired,
-    runQuery: PropTypes.func.isRequired
+    runTranspiler: PropTypes.func.isRequired
   };
 
   copyOutputHandler = (evt) => {
     evt.preventDefault();
-    this.props.copyToClipboard({ query: this.props.returnQuery, type: 'output' });
-    setTimeout(() => { this.props.clearCopy(); }, 2500);
+    this.props.copyToClipboard(this.props.transpiledExpression);
+    this.props.copySuccessChanged('output');
+    setTimeout(() => { this.props.copySuccessChanged(null); }, 2500);
   };
 
   copyInputHandler = (evt) => {
     evt.preventDefault();
-    this.props.copyToClipboard({ query: this.props.inputQuery, type: 'input'});
-    setTimeout(() => { this.props.clearCopy(); }, 2500);
+    this.props.copyToClipboard(this.props.from);
+    this.props.copySuccessChanged('input');
+    setTimeout(() => { this.props.copySuccessChanged(null); }, 2500);
   };
 
   render() {
@@ -53,8 +55,8 @@ class ExportForm extends PureComponent {
       'btn': true
     });
 
-    const errorDiv = this.props.queryError
-      ? <Alert bsStyle="danger" className={classnames(styles['export-to-lang-query-input-error'])} children={this.props.queryError}/>
+    const errorDiv = this.props.error
+      ? <Alert bsStyle="danger" className={classnames(styles['export-to-lang-query-input-error'])} children={this.props.error}/>
       : '';
 
     const outputBubbleDiv = this.props.copySuccess === 'output'
@@ -80,7 +82,7 @@ class ExportForm extends PureComponent {
         </div>
         <div className={classnames(styles['export-to-lang-query'])}>
           <div className={classnames(styles['export-to-lang-query-input'])}>
-            <Editor {...this.props} input/>
+            <Editor {...this.props} isInput/>
             {inputBubbleDiv}
             <div className={classnames(styles['export-to-lang-copy-input-container'])}>
               <IconTextButton

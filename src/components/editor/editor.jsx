@@ -20,9 +20,9 @@ class Editor extends PureComponent {
   // input query can be an object(empty query) or a string(an actual query) so
   // check for any
   static propTypes = {
-    returnQuery: PropTypes.string.isRequired,
     outputLang: PropTypes.string.isRequired,
-    queryError: PropTypes.string,
+    transpiledExpression: PropTypes.string.isRequired,
+    error: PropTypes.string,
     imports: PropTypes.string.isRequired,
     showImports: PropTypes.bool.isRequired,
     isInput: PropTypes.bool, // display input or output
@@ -39,14 +39,14 @@ class Editor extends PureComponent {
 
   componentDidUpdate() {
     if (!this.props.isInput) {
-      if (this.props.queryError) {
+      if (this.props.error) {
         this.editor.setValue('');
         this.editor.session.setMode('ace/mode/' + this.props.outputLang || 'javascript');
         this.editor.clearSelection();
       } else {
         const output = this.props.showImports && this.props.imports !== '' ?
-          this.props.imports + '\n' + this.props.returnQuery :
-          this.props.returnQuery;
+          this.props.imports + '\n' + this.props.transpiledExpression :
+          this.props.transpiledExpression;
         this.editor.setValue(output);
         this.editor.session.setMode('ace/mode/' + this.props.outputLang || 'javascript');
         this.editor.clearSelection();
@@ -71,9 +71,9 @@ class Editor extends PureComponent {
     };
 
     const queryStyle = classnames(styles.editor);
-    const output = this.props.showImports && this.props.imports !== '' ? this.props.imports + '\n' + this.props.returnQuery : this.props.returnQuery;
+    const output = this.props.showImports && this.props.imports !== '' ? this.props.imports + '\n' + this.props.transpiledExpression : this.props.transpiledExpression;
 
-    const to = this.props.queryError ? '' : output;
+    const to = this.props.error ? '' : output;
     const value = this.props.isInput ? this.props.from : to;
 
     return (

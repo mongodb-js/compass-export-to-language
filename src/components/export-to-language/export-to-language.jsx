@@ -1,6 +1,6 @@
-import { runQuery } from 'modules';
+import { runTranspiler } from 'modules';
 import { copySuccessChanged } from 'modules/copy-success';
-import { queryErrorChanged } from 'modules/query-error';
+import { errorChanged } from 'modules/error';
 import { outputLangChanged } from 'modules/output-lang';
 import { modalOpenChanged } from 'modules/modal-open';
 import { showImportsChanged } from 'modules/show-imports';
@@ -15,28 +15,27 @@ import PropTypes from 'prop-types';
 class ExportToLanguage extends PureComponent {
   static displayName = 'ExportToLanguageComponent';
   static propTypes = {
-    builders: PropTypes.bool.isRequired,
     copySuccess: PropTypes.bool.isRequired,
     copyToClipboard: PropTypes.func,
+    builders: PropTypes.bool.isRequired,
     driver: PropTypes.bool.isRequired,
     imports: PropTypes.string.isRequired,
-    inputQuery: PropTypes.object.isRequired,
+    showImports: PropTypes.bool.isRequired,
+    inputExpression: PropTypes.object.isRequired,
+    transpiledExpression: PropTypes.string.isRequired,
     modalOpen: PropTypes.bool.isRequired,
     mode: PropTypes.string.isRequired,
     outputLang: PropTypes.string.isRequired,
-    queryError: PropTypes.string,
-    returnQuery: PropTypes.string.isRequired,
-    showImports: PropTypes.bool.isRequired,
+    error: PropTypes.string,
     uri: PropTypes.string.isRequired,
     showImportsChanged: PropTypes.func.isRequired,
     buildersChanged: PropTypes.func.isRequired,
     driverChanged: PropTypes.func.isRequired,
     outputLangChanged: PropTypes.func.isRequired,
-    queryErrorChanged: PropTypes.func.isRequired,
+    errorChanged: PropTypes.func.isRequired,
     modalOpenChanged: PropTypes.func.isRequired,
     copySuccessChanged: PropTypes.func.isRequired,
-    copyToClipboardFnChanged: PropTypes.func.isRequired,
-    runQuery: PropTypes.func.isRequired
+    runTranspiler: PropTypes.func.isRequired
   };
 
   /**
@@ -66,13 +65,13 @@ const mapStateToProps = (state) => ({
   copyToClipboard: state.copyToClipboard,
   driver: state.driver,
   imports: state.imports,
-  inputQuery: state.inputQuery,
+  showImports: state.showImports,
+  inputExpression: state.inputExpression,
+  transpiledExpression: state.transpiledExpression,
   modalOpen: state.modalOpen,
   mode: state.mode,
   outputLang: state.outputLang,
-  queryError: state.queryError,
-  returnQuery: state.returnQuery,
-  showImports: state.showImports,
+  error: state.error,
   uri: state.uri
 });
 
@@ -87,11 +86,10 @@ const MappedExportToLanguage = connect(
     buildersChanged,
     driverChanged,
     outputLangChanged,
-    queryErrorChanged,
+    errorChanged,
     modalOpenChanged,
     copySuccessChanged,
-    copyToClipboardFnChanged,
-    runQuery
+    runTranspiler
   },
 )(ExportToLanguage);
 

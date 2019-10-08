@@ -11,28 +11,26 @@ class ExportModal extends PureComponent {
   static displayName = 'ExportModalComponent';
 
   static propTypes = {
+    copySuccess: PropTypes.any.isRequired,
+    copyToClipboard: PropTypes.func.isRequired,
     builders: PropTypes.bool.isRequired,
-    copySuccess: PropTypes.bool.isRequired,
-    copyToClipboard: PropTypes.func,
     driver: PropTypes.bool.isRequired,
     imports: PropTypes.string.isRequired,
-    inputQuery: PropTypes.object.isRequired,
+    showImports: PropTypes.bool.isRequired,
+    inputExpression: PropTypes.object.isRequired,
+    transpiledExpression: PropTypes.string.isRequired,
     modalOpen: PropTypes.bool.isRequired,
     mode: PropTypes.string.isRequired,
     outputLang: PropTypes.string.isRequired,
-    queryError: PropTypes.string,
-    returnQuery: PropTypes.string.isRequired,
-    showImports: PropTypes.bool.isRequired,
+    error: PropTypes.string,
     uri: PropTypes.string.isRequired,
     showImportsChanged: PropTypes.func.isRequired,
     buildersChanged: PropTypes.func.isRequired,
     driverChanged: PropTypes.func.isRequired,
     outputLangChanged: PropTypes.func.isRequired,
-    queryErrorChanged: PropTypes.func.isRequired,
     copySuccessChanged: PropTypes.func.isRequired,
     modalOpenChanged: PropTypes.func.isRequired,
-    copyToClipboardFnChanged: PropTypes.func.isRequired,
-    runQuery: PropTypes.func.isRequired
+    runTranspiler: PropTypes.func.isRequired
   };
 
   closeHandler = () => {
@@ -45,12 +43,12 @@ class ExportModal extends PureComponent {
 
   buildersHandler = () => {
     this.props.buildersChanged(!this.props.builders);
-    this.props.runQuery(this.props.outputLang, this.props.inputQuery);
+    this.props.runTranspiler(this.props.outputLang, this.props.inputExpression);
   };
 
   driverHandler = () => {
     this.props.driverChanged(!this.props.driver);
-    this.props.runQuery(this.props.outputLang, this.props.inputQuery);
+    this.props.runTranspiler(this.props.outputLang, this.props.inputExpression);
   };
 
   renderBuilderCheckbox = () => {
@@ -85,7 +83,7 @@ class ExportModal extends PureComponent {
         </Modal.Header>
 
         <Modal.Body data-test-id="export-to-lang-modal-body">
-          <ExportForm {...this.props} from={this.props.mode === 'Query' ? this.props.inputQuery.filter : this.props.inputQuery.aggregation}/>
+          <ExportForm {...this.props} from={this.props.mode === 'Query' ? this.props.inputExpression.filter : this.props.inputExpression.aggregation}/>
           <div className={classnames(styles['export-to-lang-modal-checkbox-imports'])}>
             <Checkbox data-test-id="export-to-lang-checkbox-imports" onClick={this.importsHandler}>
                Include Import Statements
