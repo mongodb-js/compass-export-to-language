@@ -4,6 +4,7 @@ import { modeChanged } from 'modules/mode';
 import { uriChanged } from 'modules/uri';
 import { runTranspiler } from 'modules';
 import { copyToClipboardFnChanged } from 'modules/copy-to-clipboard';
+import { namespaceChanged } from 'modules/namespace';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import {
@@ -51,6 +52,14 @@ const configureStore = (options = {}) => {
 
     localAppRegistry.on('data-service-initialized', (dataService) => {
       store.dispatch(uriChanged(dataService.client.model.driverUrl));
+    });
+
+    localAppRegistry.on('collection-changed', (ns) => {
+      store.dispatch(namespaceChanged(ns));
+    });
+
+    localAppRegistry.on('database-changed', (ns) => {
+      store.dispatch(namespaceChanged(ns));
     });
 
   }

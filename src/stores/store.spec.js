@@ -27,6 +27,29 @@ describe('ExportToLanguage Store', () => {
       if (unsubscribe !== undefined) unsubscribe();
     });
 
+    describe('update ns', () => {
+      it('updates for collection-changed', (done) => {
+        unsubscribe = subscribeCheck(store, '', (s) => (
+          s.namespace === 'db.coll'
+        ), done);
+        appRegistry.emit('collection-changed', 'db.coll');
+      });
+      it('updates for database-changed', (done) => {
+        unsubscribe = subscribeCheck(store, '', (s) => (
+          s.namespace === 'db.coll'
+        ), done);
+        appRegistry.emit('database-changed', 'db.coll');
+      });
+    });
+    describe('data-service URI', () => {
+      it('updates for data-service-initialized', (done) => {
+        unsubscribe = subscribeCheck(store, '', (s) => (
+          s.uri === 'localhost'
+        ), done);
+        appRegistry.emit('data-service-initialized', {client: {model: {driverUrl: 'localhost'}}});
+      });
+    });
+
     describe('when aggregation opens export to language', () => {
       const agg = `{
   0: true, 1: 1, 2: NumberLong(100), 3: 0.001, 4: 0x1243, 5: 0o123,

@@ -145,7 +145,7 @@ describe('ExportForm [Component]', () => {
         .simulate('click');
       expect(copyToClipboardSpy.calledOnce).to.equal(true);
       expect(copyToClipboardSpy.getCall(0).args[0]).to.deep.equal(
-        {input: { query: "{\\n'x': 1\\n}" }}
+        "{\\n'x': 1\\n}"
       );
       expect(copySuccessChangedSpy.calledOnce).to.equal(true);
     });
@@ -157,7 +157,7 @@ describe('ExportForm [Component]', () => {
         .simulate('click');
       expect(copyToClipboardSpy.calledTwice).to.equal(true);
       expect(copyToClipboardSpy.getCall(1).args[0]).to.deep.equal(
-        {input: { query: '{x: 1}' }}
+        '{x: 1}'
       );
       expect(copySuccessChangedSpy.calledTwice).to.equal(true);
     });

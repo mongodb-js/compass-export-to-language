@@ -44,10 +44,14 @@ import showImports, {
 import uri, {
   INITIAL_STATE as URI_INITIAL_STATE
 } from 'modules/uri';
+import namespace, {
+  INITIAL_STATE as NS_INITIAL_STATE
+} from 'modules/namespace';
 import {
   globalAppRegistryEmit
 } from 'mongodb-redux-common/app-registry';
 import compiler from 'bson-transpilers';
+import ns from 'mongodb-ns';
 
 
 export const INITIAL_STATE = {
@@ -64,6 +68,7 @@ export const INITIAL_STATE = {
   transpiledExpression: TRANSPILED_EXPRESSION_INITIAL_STATE,
   showImports: SHOW_IMPORTS_INITIAL_STATE,
   uri: URI_INITIAL_STATE,
+  namespace: NS_INITIAL_STATE,
   appRegistry: APP_REGISTRY_STATE
 };
 
@@ -84,6 +89,7 @@ const reducer = combineReducers({
   transpiledExpression,
   showImports,
   uri,
+  namespace,
   appRegistry
 });
 
@@ -106,8 +112,12 @@ export const runTranspiler = (outputLang, input) => {
     try {
       let output;
       if (state.driver) {
-        const toCompile = Object.assign({uri: state.uri}, input);
-        input.uri = state.uri;
+        const ns = ns(state.namespace);
+        const toCompile = Object.assign({
+          collection: ns.collection,
+          db: ns.database,
+          uri: state.uri
+        }, input);
         if (state.mode === 'Query') {
           output = compiler.shell[outputLang].compileQuery(
             toCompile, state.builders
@@ -118,11 +128,11 @@ export const runTranspiler = (outputLang, input) => {
           );
         }
       } else {
-        const filter = state.mode === 'Query' ? input.filter : input.aggregation;
-        output = compiler.shell[outputLang].compile(filter, state.builders);
+        const transpilerInput = state.mode === 'Query' ? input.filter : input.aggregation;
+        output = compiler.shell[outputLang].compile(transpilerInput, state.builders);
       }
-      dispatch(importsChanged(compiler.shell[outputLang].getImports()));
       dispatch(transpiledExpressionChanged(output));
+      dispatch(importsChanged(compiler.shell[outputLang].getImports()));
       dispatch(errorChanged(null));
       dispatch(
         globalAppRegistryEmit(
@@ -130,7 +140,6 @@ export const runTranspiler = (outputLang, input) => {
           { language: outputLang, showImports: state.showImports, type: state.mode }
         )
       );
-      // return state;
     } catch (e) {
       return dispatch(errorChanged(e.message));
     }
