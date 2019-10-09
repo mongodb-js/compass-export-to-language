@@ -110,27 +110,19 @@ export const runTranspiler = (outputLang, input) => {
   return (dispatch, getState) => {
     const state = getState();
     try {
-      let output;
+      let toCompile = state.mode === 'Query' ? input.filter : input.aggregation;
       if (state.driver) {
         const ns = ns(state.namespace);
-        const toCompile = Object.assign({
-          collection: ns.collection,
-          db: ns.database,
-          uri: state.uri
+        toCompile = Object.assign(
+          {
+            options: {
+              collection: ns.collection,
+              db: ns.database,
+              uri: state.uri
+            }
         }, input);
-        if (state.mode === 'Query') {
-          output = compiler.shell[outputLang].compileQuery(
-            toCompile, state.builders
-          );
-        } else {
-          output = compiler.shell[outputLang].compileAggregation(
-            toCompile, state.builders
-          );
-        }
-      } else {
-        const transpilerInput = state.mode === 'Query' ? input.filter : input.aggregation;
-        output = compiler.shell[outputLang].compile(transpilerInput, state.builders);
       }
+      const output = compiler.shell[outputLang].compile(toCompile, state.builders, state.driver);
       dispatch(transpiledExpressionChanged(output));
       dispatch(importsChanged(compiler.shell[outputLang].getImports()));
       dispatch(errorChanged(null));
