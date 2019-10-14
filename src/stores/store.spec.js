@@ -118,7 +118,7 @@ describe('ExportToLanguage Store', () => {
         appRegistry.emit('open-query-export-to-language', query);
       });
 
-      it('triggers run transpiler command', (done) => {
+      xit('triggers run transpiler command', (done) => {
         unsubscribe = subscribeCheck(store, query, (s) => (
           s.transpiledExpression === compiler.shell.python.compile(query.filter)
         ), done);
