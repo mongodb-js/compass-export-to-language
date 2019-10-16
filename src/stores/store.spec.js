@@ -88,6 +88,85 @@ describe('ExportToLanguage Store', () => {
       });
     });
 
+    describe('when query opens export to language with imperfect fields', () => {
+      it('filters query correctly with only filter', (done) => {
+        unsubscribe = subscribeCheck(store, {}, (s) => (
+          JSON.stringify(s.inputExpression) === JSON.stringify({filter: "'filterString'"})
+      ), done);
+        appRegistry.emit('open-query-export-to-language',{
+          project: '', maxTimeMS: '', sort: '', skip: '', limit: '', collation: '',
+          filter: "'filterString'"
+        });
+      });
+
+      it('filters query correctly with other args', (done) => {
+        unsubscribe = subscribeCheck(store, {}, (s) => (
+          JSON.stringify(s.inputExpression) === JSON.stringify({
+            filter: "'filterString'", skip: '10', limit: '50'
+          })
+        ), done);
+        appRegistry.emit('open-query-export-to-language',{
+          filter: "'filterString'",
+          project: '',
+          sort: '',
+          collation: '',
+          skip: '10',
+          limit: '50',
+          maxTimeMS: ''
+        });
+      });
+
+      it('handles default filter', (done) => {
+        unsubscribe = subscribeCheck(store, {}, (s) => (
+          JSON.stringify(s.inputExpression) === JSON.stringify({ filter: '{}' })
+        ), done);
+        appRegistry.emit('open-query-export-to-language', {
+          project: '', maxTimeMS: '', sort: '', skip: '', limit: '', collation: '', filter: ''
+        });
+      });
+
+      it('handles null or missing args', (done) => {
+        unsubscribe = subscribeCheck(store, {}, (s) => (
+          JSON.stringify(s.inputExpression) === JSON.stringify({ filter: '{}' })
+        ), done);
+        appRegistry.emit('open-query-export-to-language', {
+          maxTimeMS: null, sort: null
+        });
+      });
+
+      it('treats a string as a filter', (done) => {
+        unsubscribe = subscribeCheck(store, {}, (s) => (
+          JSON.stringify(s.inputExpression) === JSON.stringify({ filter: '{x: 1, y: 2}'})
+        ), done);
+        appRegistry.emit('open-query-export-to-language', '{x: 1, y: 2}');
+      });
+
+      it('treats a empty string as a default filter', (done) => {
+        unsubscribe = subscribeCheck(store, {}, (s) => (
+          JSON.stringify(s.inputExpression) === JSON.stringify({ filter: '{}' })
+        ), done);
+        appRegistry.emit('open-query-export-to-language', '');
+      });
+
+      it('handles default filter with other args', (done) => {
+        unsubscribe = subscribeCheck(store, {}, (s) => (
+          JSON.stringify(s.inputExpression) === JSON.stringify({
+            filter: '{}',
+            sort: '{x: 1}'
+          })
+        ), done);
+        appRegistry.emit('open-query-export-to-language', {
+          filter: '',
+          project: '',
+          sort: '{x: 1}',
+          collation: '',
+          skip: '',
+          limit: '',
+          maxTimeMS: ''
+        });
+      });
+    });
+
     describe('when query opens export to language', () => {
       const query = {filter: `{
   isQuery: true, 0: true, 1: 1, 2: NumberLong(100), 3: 0.001, 4: 0x1243, 5: 0o123,
@@ -113,7 +192,7 @@ describe('ExportToLanguage Store', () => {
 
       it('adds input expression to the state', (done) => {
         unsubscribe = subscribeCheck(store, query, (s) => (
-          s.inputExpression === query
+          JSON.stringify(s.inputExpression) === JSON.stringify(query)
         ), done);
         appRegistry.emit('open-query-export-to-language', query);
       });
