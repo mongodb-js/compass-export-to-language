@@ -84,16 +84,18 @@ class ExportModal extends PureComponent {
 
         <Modal.Body data-test-id="export-to-lang-modal-body">
           <ExportForm {...this.props} from={this.props.mode === 'Query' ? this.props.inputExpression.filter : this.props.inputExpression.aggregation}/>
-          <div className={classnames(styles['export-to-lang-modal-checkbox-imports'])}>
-            <Checkbox data-test-id="export-to-lang-checkbox-imports" onClick={this.importsHandler} defaultChecked={this.props.showImports}>
-               Include Import Statements
-           </Checkbox>
-          </div>
           <div className={classnames(styles['export-to-lang-modal-checkbox-driver'])}>
             <Checkbox data-test-id="export-to-lang-checkbox-driver" onClick={this.driverHandler} defaultChecked={this.props.driver}>
               Include Driver Syntax
             </Checkbox>
           </div>
+          {this.props.driver && (
+            <div className={classnames(styles['export-to-lang-modal-checkbox-imports'])}>
+              <Checkbox data-test-id="export-to-lang-checkbox-imports" onClick={this.importsHandler} defaultChecked={this.props.showImports}>
+                Include Import Statements
+            </Checkbox>
+            </div>
+          )}
           {this.renderBuilderCheckbox()}
         </Modal.Body>
 

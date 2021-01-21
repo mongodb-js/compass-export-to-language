@@ -67,14 +67,44 @@ describe('ExportModal [Component]', () => {
       expect(component.find('[data-test-id="export-to-lang-close"]')).to.be.present();
     });
 
-    it('renders the import checkbox', () => {
-      expect(component.find('[data-test-id="export-to-lang-checkbox-imports"]')).to.be.present();
+    it('does not render the import checkbox', () => {
+      expect(component.find('[data-test-id="export-to-lang-checkbox-imports"]')).to.not.be.present();
     });
     it('renders the driver checkbox', () => {
       expect(component.find('[data-test-id="export-to-lang-checkbox-driver"]')).to.be.present();
     });
     it('does not render the builders checkbox on default', () => {
       expect(component.find('[data-test-id="export-to-lang-checkbox-builders"]')).to.not.be.present();
+    });
+  });
+
+  context('when the component is rendered with driver boolean true', () => {
+    it('renders the import checkbox', () => {
+      const component = shallow(
+        <ExportModal
+          copySuccess={false}
+          copyToClipboard={() => {}}
+          builders={false}
+          driver
+          imports="imports"
+          showImports={false}
+          inputExpression={{filter: "input expression"}}
+          transpiledExpression="transpiled expression"
+          modalOpen={false}
+          mode="Query"
+          outputLang="python"
+          error={null}
+          uri="uri"
+          showImportsChanged={() => {}}
+          buildersChanged={() => {}}
+          driverChanged={() => {}}
+          outputLangChanged={() => {}}
+          modalOpenChanged={() => {}}
+          copySuccessChanged={() => {}}
+          runTranspiler={() => {}} />
+      );
+
+      expect(component.find('[data-test-id="export-to-lang-checkbox-imports"]')).to.be.present();
     });
   });
 
@@ -94,7 +124,7 @@ describe('ExportModal [Component]', () => {
         <ExportModal
           copySuccess={false}
           builders={false}
-          driver={false}
+          driver
           imports="imports"
           showImports={false}
           inputExpression={{filter: "input expression"}}
